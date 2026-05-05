@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-	baseURL: import.meta.env.VITE_API_URL,
+	baseURL: 'https://blog-post-1iny.onrender.com/api',
 });
 
 export default api;
