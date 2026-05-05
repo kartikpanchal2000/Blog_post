@@ -16,7 +16,7 @@ app.use(
 		//origin: process.env.CLIENT_URL || 'http://localhost:5173',
 		origin: [
 			'http://localhost:5173',
-			'https://blog-post-kappa-eight.vercel.app/',
+			'https://blog-post-kappa-eight.vercel.app',
 		],
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
