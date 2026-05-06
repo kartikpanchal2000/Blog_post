@@ -8,16 +8,24 @@ export interface CreatePostDTO {
 	title: string;
 	content: string;
 	author: string;
+	email?: string;
 	category: string;
+	tags?: string[];
 	status?: string;
+	thumbnailUrl?: string;
+	shortDescription?: string;
 }
 
 export interface UpdatePostDTO {
 	title?: string;
 	content?: string;
 	author?: string;
+	email?: string;
 	category?: string;
+	tags?: string[];
 	status?: string;
+	thumbnailUrl?: string;
+	shortDescription?: string;
 }
 
 export interface SearchFilters {
@@ -60,7 +68,7 @@ export class PostService {
 
 		const findOptions: FindManyOptions<Post> = {
 			where: whereConditions.length > 0 ? whereConditions : undefined,
-			order: { createdAt: 'DESC' },
+			order: { createdAt: 'ASC' },
 			skip,
 			take: limit,
 		};

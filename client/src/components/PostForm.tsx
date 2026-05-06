@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { PostFormData } from '../types/post';
@@ -30,6 +31,22 @@ interface Props {
 	isEdit?: boolean;
 }
 
+const SectionTitle: React.FC<{ children: React.ReactNode }> = ({
+	children,
+}) => (
+	<Grid item xs={12}>
+		<Typography
+			variant='subtitle1'
+			fontWeight={600}
+			color='text.secondary'
+			sx={{ mt: 1 }}
+		>
+			{children}
+		</Typography>
+		<Divider sx={{ mt: 0.5 }} />
+	</Grid>
+);
+
 const PostForm: React.FC<Props> = ({
 	defaultValues = {},
 	onSubmit,
@@ -47,8 +64,12 @@ const PostForm: React.FC<Props> = ({
 			title: defaultValues.title || '',
 			content: defaultValues.content || '',
 			author: defaultValues.author || '',
+			email: defaultValues.email || '',
 			category: defaultValues.category || '',
+			tags: defaultValues.tags || '',
 			status: defaultValues.status || 'Draft',
+			thumbnailUrl: defaultValues.thumbnailUrl || '',
+			shortDescription: defaultValues.shortDescription || '',
 		},
 	});
 
@@ -57,7 +78,10 @@ const PostForm: React.FC<Props> = ({
 	return (
 		<Box component='form' onSubmit={handleSubmit(onSubmit)} noValidate>
 			<Grid container spacing={3}>
-				<Grid item xs={12}>
+				{/* Basic Information */}
+				<SectionTitle>Basic Information</SectionTitle>
+
+				<Grid item xs={12} sm={6}>
 					<Controller
 						name='title'
 						control={control}
@@ -68,12 +92,12 @@ const PostForm: React.FC<Props> = ({
 						render={({ field }) => (
 							<TextField
 								{...field}
-								label='Post Title'
+								label='Title'
 								fullWidth
 								required
 								error={!!errors.title}
 								helperText={errors.title?.message}
-								placeholder='Enter a compelling title...'
+								placeholder='Enter post title'
 							/>
 						)}
 					/>
@@ -90,15 +114,43 @@ const PostForm: React.FC<Props> = ({
 						render={({ field }) => (
 							<TextField
 								{...field}
-								label='Author'
+								label='Author Name'
 								fullWidth
 								required
 								error={!!errors.author}
 								helperText={errors.author?.message}
+								placeholder='Enter author name'
 							/>
 						)}
 					/>
 				</Grid>
+
+				<Grid item xs={12}>
+					<Controller
+						name='email'
+						control={control}
+						rules={{
+							pattern: {
+								value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+								message: 'Enter a valid email address',
+							},
+						}}
+						render={({ field }) => (
+							<TextField
+								{...field}
+								label='Email Address'
+								fullWidth
+								type='email'
+								error={!!errors.email}
+								helperText={errors.email?.message}
+								placeholder='author@example.com'
+							/>
+						)}
+					/>
+				</Grid>
+
+				{/* Classification */}
+				<SectionTitle>Classification</SectionTitle>
 
 				<Grid item xs={12} sm={6}>
 					<Controller
@@ -130,6 +182,23 @@ const PostForm: React.FC<Props> = ({
 
 				<Grid item xs={12} sm={6}>
 					<Controller
+						name='tags'
+						control={control}
+						render={({ field }) => (
+							<TextField
+								{...field}
+								label='Tags'
+								fullWidth
+								error={!!errors.tags}
+								helperText={errors.tags?.message || 'Separate tags with commas'}
+								placeholder='Comma-separated tags'
+							/>
+						)}
+					/>
+				</Grid>
+
+				<Grid item xs={12} sm={6}>
+					<Controller
 						name='status'
 						control={control}
 						rules={{ required: 'Status is required' }}
@@ -150,6 +219,60 @@ const PostForm: React.FC<Props> = ({
 					/>
 				</Grid>
 
+				{/* Media */}
+				<SectionTitle>Media</SectionTitle>
+
+				<Grid item xs={12}>
+					<Controller
+						name='thumbnailUrl'
+						control={control}
+						rules={{
+							pattern: {
+								value: /^https?:\/\/.+/,
+								message: 'Enter a valid URL (starting with http/https)',
+							},
+						}}
+						render={({ field }) => (
+							<TextField
+								{...field}
+								label='Thumbnail URL'
+								fullWidth
+								error={!!errors.thumbnailUrl}
+								helperText={errors.thumbnailUrl?.message}
+								placeholder='https://example.com/image.jpg'
+							/>
+						)}
+					/>
+				</Grid>
+
+				{/* Content */}
+				<SectionTitle>Content</SectionTitle>
+
+				<Grid item xs={12}>
+					<Controller
+						name='shortDescription'
+						control={control}
+						rules={{
+							maxLength: { value: 500, message: 'Max 500 characters' },
+						}}
+						render={({ field }) => (
+							<TextField
+								{...field}
+								label='Short Description'
+								fullWidth
+								multiline
+								rows={3}
+								error={!!errors.shortDescription}
+								helperText={
+									errors.shortDescription?.message ||
+									'Brief summary of the post'
+								}
+								placeholder='Brief summary of the post'
+							/>
+						)}
+					/>
+				</Grid>
+
 				<Grid item xs={12}>
 					<Controller
 						name='content'
@@ -161,7 +284,7 @@ const PostForm: React.FC<Props> = ({
 						render={({ field }) => (
 							<TextField
 								{...field}
-								label='Content'
+								label='Post Content'
 								fullWidth
 								required
 								multiline
@@ -171,7 +294,7 @@ const PostForm: React.FC<Props> = ({
 									errors.content?.message ||
 									`${contentValue?.length || 0} characters`
 								}
-								placeholder='Write your blog post content here...'
+								placeholder='Write your full blog post content here'
 							/>
 						)}
 					/>

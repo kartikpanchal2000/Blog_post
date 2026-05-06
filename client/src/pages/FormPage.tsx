@@ -113,7 +113,16 @@ const FormPage: React.FC = () => {
 				/>
 				<Divider sx={{ mb: 3 }} />
 				<PostForm
-					defaultValues={existingPost ?? {}}
+					defaultValues={
+						existingPost
+							? {
+									...existingPost,
+									tags: Array.isArray(existingPost.tags)
+										? existingPost.tags.join(', ')
+										: existingPost.tags,
+								}
+							: {}
+					}
 					onSubmit={handleSubmit}
 					isLoading={submitLoading}
 					isEdit={isEdit}

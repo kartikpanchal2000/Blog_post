@@ -20,10 +20,26 @@ export const fetchPostById = async (
 	return data;
 };
 
+const transformPostData = (postData: PostFormData | Partial<PostFormData>) => {
+	return {
+		...postData,
+		tags: postData.tags
+			? postData.tags
+					.toString()
+					.split(',')
+					.map((t) => t.trim())
+					.filter(Boolean)
+			: [],
+	};
+};
+
 export const createPost = async (
 	postData: PostFormData,
 ): Promise<SinglePostResponse> => {
-	const { data } = await apiClient.post<SinglePostResponse>('/posts', postData);
+	const { data } = await apiClient.post<SinglePostResponse>(
+		'/posts',
+		transformPostData(postData),
+	);
 	return data;
 };
 
@@ -33,7 +49,7 @@ export const updatePost = async (
 ): Promise<SinglePostResponse> => {
 	const { data } = await apiClient.put<SinglePostResponse>(
 		`/posts/${id}`,
-		postData,
+		transformPostData(postData),
 	);
 	return data;
 };

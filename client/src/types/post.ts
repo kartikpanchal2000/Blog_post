@@ -3,8 +3,12 @@ export interface Post {
 	title: string;
 	content: string;
 	author: string;
+	email?: string;
 	category: string;
+	tags?: string[];
 	status: 'Published' | 'Draft';
+	thumbnailUrl?: string;
+	shortDescription?: string;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -42,6 +46,10 @@ export interface PostFormData {
 	title: string;
 	content: string;
 	author: string;
+	email?: string;
 	category: string;
+	tags?: string;
 	status: 'Published' | 'Draft';
+	thumbnailUrl?: string;
+	shortDescription?: string;
 }
