@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -59,26 +59,42 @@ const PostForm: React.FC<Props> = ({
 		handleSubmit,
 		formState: { errors },
 		watch,
+		reset,
 	} = useForm<PostFormData>({
 		defaultValues: {
-			title: defaultValues.title || '',
-			content: defaultValues.content || '',
-			author: defaultValues.author || '',
-			email: defaultValues.email || '',
-			category: defaultValues.category || '',
-			tags: defaultValues.tags || '',
-			status: defaultValues.status || 'Draft',
-			thumbnailUrl: defaultValues.thumbnailUrl || '',
-			shortDescription: defaultValues.shortDescription || '',
+			title: '',
+			content: '',
+			author: '',
+			email: '',
+			category: '',
+			tags: '',
+			status: 'Draft',
+			thumbnailUrl: '',
+			shortDescription: '',
 		},
 	});
+
+	useEffect(() => {
+		if (defaultValues && Object.keys(defaultValues).length > 0) {
+			reset({
+				title: defaultValues.title || '',
+				content: defaultValues.content || '',
+				author: defaultValues.author || '',
+				email: defaultValues.email || '',
+				category: defaultValues.category || '',
+				tags: defaultValues.tags || '',
+				status: defaultValues.status || 'Draft',
+				thumbnailUrl: defaultValues.thumbnailUrl || '',
+				shortDescription: defaultValues.shortDescription || '',
+			});
+		}
+	}, [defaultValues, reset]);
 
 	const contentValue = watch('content');
 
 	return (
 		<Box component='form' onSubmit={handleSubmit(onSubmit)} noValidate>
 			<Grid container spacing={3}>
-				{/* Basic Information */}
 				<SectionTitle>Basic Information</SectionTitle>
 
 				<Grid item xs={12} sm={6}>
@@ -149,7 +165,6 @@ const PostForm: React.FC<Props> = ({
 					/>
 				</Grid>
 
-				{/* Classification */}
 				<SectionTitle>Classification</SectionTitle>
 
 				<Grid item xs={12} sm={6}>
@@ -189,8 +204,7 @@ const PostForm: React.FC<Props> = ({
 								{...field}
 								label='Tags'
 								fullWidth
-								error={!!errors.tags}
-								helperText={errors.tags?.message || 'Separate tags with commas'}
+								helperText='Separate tags with commas'
 								placeholder='Comma-separated tags'
 							/>
 						)}
@@ -219,7 +233,6 @@ const PostForm: React.FC<Props> = ({
 					/>
 				</Grid>
 
-				{/* Media */}
 				<SectionTitle>Media</SectionTitle>
 
 				<Grid item xs={12}>
@@ -245,16 +258,13 @@ const PostForm: React.FC<Props> = ({
 					/>
 				</Grid>
 
-				{/* Content */}
 				<SectionTitle>Content</SectionTitle>
 
 				<Grid item xs={12}>
 					<Controller
 						name='shortDescription'
 						control={control}
-						rules={{
-							maxLength: { value: 500, message: 'Max 500 characters' },
-						}}
+						rules={{ maxLength: { value: 500, message: 'Max 500 characters' } }}
 						render={({ field }) => (
 							<TextField
 								{...field}

@@ -10,6 +10,7 @@ import Divider from '@mui/material/Divider';
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import Chip from '@mui/material/Chip';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { usePost } from '../hooks/usePost';
@@ -65,6 +66,17 @@ const ViewPage: React.FC = () => {
 			</Container>
 		);
 	if (!post) return null;
+
+	const metaItems = [
+		{ label: 'Post ID', value: post.id.substring(0, 8) + '...' },
+		{ label: 'Category', value: post.category },
+		{ label: 'Status', value: post.status || 'Draft' },
+		{ label: 'Created', value: new Date(post.createdAt).toLocaleDateString() },
+		...(post.email ? [{ label: 'Email', value: post.email }] : []),
+		...(post.tags?.length
+			? [{ label: 'Tags', value: post.tags.join(', ') }]
+			: []),
+	];
 
 	return (
 		<Container maxWidth='md' sx={{ py: 4 }}>
@@ -132,6 +144,22 @@ const ViewPage: React.FC = () => {
 			>
 				<Box sx={{ height: 4, backgroundColor: '#1a1a2e' }} />
 				<Box sx={{ p: { xs: 2.5, sm: 5 } }}>
+					{/* Thumbnail */}
+					{post.thumbnailUrl && (
+						<Box sx={{ mb: 3, borderRadius: 2, overflow: 'hidden' }}>
+							<img
+								src={post.thumbnailUrl}
+								alt={post.title}
+								style={{
+									width: '100%',
+									maxHeight: 340,
+									objectFit: 'cover',
+									display: 'block',
+								}}
+							/>
+						</Box>
+					)}
+
 					<Box sx={{ mb: 2 }}>
 						<CategoryChip category={post.category} size='medium' />
 					</Box>
@@ -143,12 +171,27 @@ const ViewPage: React.FC = () => {
 							fontWeight: 700,
 							color: '#1a1a2e',
 							lineHeight: 1.25,
-							mb: 3,
+							mb: 2,
 							fontSize: { xs: '1.75rem', sm: '2.25rem' },
 						}}
 					>
 						{post.title}
 					</Typography>
+
+					{/* Short Description */}
+					{post.shortDescription && (
+						<Typography
+							variant='subtitle1'
+							sx={{
+								color: 'text.secondary',
+								mb: 3,
+								fontStyle: 'italic',
+								lineHeight: 1.6,
+							}}
+						>
+							{post.shortDescription}
+						</Typography>
+					)}
 
 					{/* Author + Date */}
 					<Box
@@ -181,6 +224,15 @@ const ViewPage: React.FC = () => {
 								<Typography variant='caption' color='text.secondary'>
 									Author
 								</Typography>
+								{post.email && (
+									<Typography
+										variant='caption'
+										color='text.secondary'
+										sx={{ display: 'block' }}
+									>
+										{post.email}
+									</Typography>
+								)}
 							</Box>
 						</Box>
 						<Typography
@@ -204,25 +256,35 @@ const ViewPage: React.FC = () => {
 						{post.content}
 					</Typography>
 
+					{/* Tags */}
+					{post.tags && post.tags.length > 0 && (
+						<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 3 }}>
+							{post.tags.map((tag) => (
+								<Chip
+									key={tag}
+									label={`#${tag}`}
+									size='small'
+									sx={{
+										backgroundColor: '#f0f4ff',
+										color: '#3b5bdb',
+										fontWeight: 500,
+									}}
+								/>
+							))}
+						</Box>
+					)}
+
 					<Divider sx={{ mt: 5, mb: 3 }} />
 
 					{/* Meta grid */}
 					<Box
 						sx={{
 							display: 'grid',
-							gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(4, 1fr)' },
+							gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(3, 1fr)' },
 							gap: 2,
 						}}
 					>
-						{[
-							{ label: 'Post ID', value: post.id.substring(0, 8) + '...' },
-							{ label: 'Category', value: post.category },
-							{ label: 'Status', value: post.status || 'Draft' },
-							{
-								label: 'Created',
-								value: new Date(post.createdAt).toLocaleDateString(),
-							},
-						].map((item) => (
+						{metaItems.map((item) => (
 							<Box key={item.label}>
 								<Typography
 									variant='caption'

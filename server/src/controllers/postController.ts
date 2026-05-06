@@ -15,13 +15,27 @@ export class PostController {
 				});
 				return;
 			}
-			const { title, content, author, category, status } = req.body;
+			const {
+				title,
+				content,
+				author,
+				email,
+				category,
+				tags,
+				status,
+				thumbnailUrl,
+				shortDescription,
+			} = req.body;
 			const post = await postService.createPost({
 				title,
 				content,
 				author,
+				email,
 				category,
+				tags,
 				status,
+				thumbnailUrl,
+				shortDescription,
 			});
 			res.status(201).json({
 				success: true,
@@ -91,13 +105,27 @@ export class PostController {
 				return;
 			}
 			const id = String(req.params.id);
-			const { title, content, author, category, status } = req.body;
+			const {
+				title,
+				content,
+				author,
+				email,
+				category,
+				tags,
+				status,
+				thumbnailUrl,
+				shortDescription,
+			} = req.body;
 			const updatedPost = await postService.updatePost(id, {
 				title,
 				content,
 				author,
+				email,
 				category,
+				tags,
 				status,
+				thumbnailUrl,
+				shortDescription,
 			});
 			if (!updatedPost) {
 				res
